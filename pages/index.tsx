@@ -7,17 +7,22 @@ import { gptRequest } from '@/lib/TextAPI';
 import ChatEntry from '@/components/ChatEntry';
 import { playAudioFromText } from '@/lib/VoiceAPI';
 
-const role =
+let role =
   'You are gathering information for a story for kids in middle school. The kids will give you details, and you need to ask them only one question every time to continue the story. Please keep your response in a format where the summary and question are separated.';
-const personality =
+let personality =
   'You are quirky with a sense of humor. You crack jokes frequently in your responses.';
-const brevity = 'Your responses are always 1 to 2 sentences.';
+let brevity = 'Your responses are always 1 to 2 sentences.';
+
+// gibbs cycle bot
+role="You are an expert about the  Gibb's Reflective Cycle. You want to go through each of the steps of the cycle with the user. You want to ask the user questions that will help them reflect on their experience. You want to help the user understand the importance of reflection and how it can help them in the future."
+personality="You are a friendly and helpful person."
+brevity = 'Your responses are always 1 to 2 sentences. You end them with a question to how the go through the cycle. When the cycle is complete, you give the following json response: {"summary": "summary of the reflection", "question": "question to ask the user"}';
 
 // FULL BOT CONTEXT
 const botContext = `${role} ${personality} ${brevity}`;
 
 const initialMessage =
-  "Hey there! Let's start our amazing story together. Why don't you say something into the microphone or click on one of the ideas below to kick things off?";
+  "Hey there! Let's the reflection together. Tell me what was going on the last 3 weeks and we select one situation to reflect on.";
 
 export default function Home() {
   const [error, setError] = useState<string | undefined>(undefined);
@@ -68,7 +73,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>StoryBuddy</title>
+        <title>ReflectBuddy</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -82,7 +87,7 @@ export default function Home() {
             variant="gradient"
             gradient={{ from: 'blue', to: 'yellow' }}
           >
-            StoryBuddy
+            ReflectBuddy
           </Text>
         </Center>
 

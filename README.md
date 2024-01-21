@@ -29,3 +29,11 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 * Replace audio recorder with https://github.com/DeltaCircuit/react-media-recorder
 * Add a switch to toggle voice output.
 * Replace UI components with tailwindcss.
+
+
+## Query
+Aria we are going to create a selfreflection converifing the most important events about my past week. I'll give you my calendar entries and short summaries what I did. Based on this you ask me questions about the most important/significant events to which I will give you answers. In the end when I have nothing to add anymore you are going to group the events, give them headlines and summarize the highlights. Ready or do you need additional information?
+
+Get the calendar entries with https://www.npmjs.com/package/webdav
+
+Get diary entries with https://www.npmjs.com/package/imapflow
