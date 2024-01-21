@@ -29,6 +29,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 * Replace audio recorder with https://github.com/DeltaCircuit/react-media-recorder
 * Add a switch to toggle voice output.
 * Replace UI components with tailwindcss.
+* Check out functions and data https://github.com/vercel/ai/blob/main/examples/next-openai/app/api/chat-with-tools/route.ts
 
 
 ## Query

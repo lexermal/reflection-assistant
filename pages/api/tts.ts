@@ -2,17 +2,19 @@ import OpenAI from "openai";
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const openai = new OpenAI();
+    const body = JSON.parse(req.body);
 
-    if (!req.query.text) {
+    if (!body.text) {
         res.status(400).send('No text provided');
         return;
     }
 
+    const openai = new OpenAI();
+
     const mp3 = await openai.audio.speech.create({
         model: "tts-1",
         voice: "alloy",
-        input: req.query.text as string,
+        input: body.text,
     });
 
     // Set the appropriate headers

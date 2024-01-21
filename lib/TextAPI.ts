@@ -1,8 +1,8 @@
-export const gptRequest = async (messagesArray: any[]) => {
-    return fetch('/api/chatgpt', {
+export const gptRequest = async (messages: any[]) => {
+    return fetch('/api/gpt', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: messagesArray })
+        body: JSON.stringify({ messages })
     })
         .then((res) => res.json())
         .then((data) => data.content)
