@@ -1,3 +1,6 @@
+import '@/app/globals.css'
+import 'bootstrap-icons/font/bootstrap-icons.css';
+
 export const metadata = {
   title: 'Reflection Buddy',
   description: 'A tool to help you reflect on your day.',

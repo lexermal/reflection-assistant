@@ -1,5 +1,3 @@
-import { Container, Center, Input, Button, Loader } from '@mantine/core';
-import { IconRefresh } from '@tabler/icons';
 import { FormEvent, useState } from 'react';
 import { AudioRecorder } from 'react-audio-voice-recorder';
 import { whisperRequestSTT } from '../lib/VoiceAPI';
@@ -28,32 +26,28 @@ export default function InputBar(props: {
 
   if (props.loading) {
     return (
-      <Container size="sm">
-        <Center style={{ height: 200 }}>
-          <Loader size="lg" />
-        </Center>
-      </Container>
+      <div className='container'>
+        <div className='content-center' style={{ height: 200 }}>
+          Loading....
+        </div>
+      </div>
     );
   }
 
   return (
-    <Container size="sm">
-      <Center style={{ height: 200 }}>
+    <div className='container'>
+      <div className='content-center' style={{ height: 200 }}>
         <form onSubmit={handleInputSubmit} style={{ display: 'flex' }}>
-          <Input
+          <input
             value={inputValue}
             onChange={(event) => setInputValue(event.target.value)}
             placeholder="Type your message..."
           />
-          <Button
-            variant="gradient"
-            radius={100}
-            m={3}
-            gradient={{ from: 'indigo', to: 'cyan' }}
+          <button
             type="submit"
           >
             Send
-          </Button>
+          </button>
         </form>
         <div style={{ alignItems: 'start', display: 'contents' }}>
           <AudioRecorder
@@ -69,20 +63,14 @@ export default function InputBar(props: {
                 });
             }}
           />
-          <Button
-            variant="gradient"
-            radius={100}
-            w={40}
-            m={20}
-            p={0}
-            gradient={{ from: 'indigo', to: 'cyan' }}
+          <button
             onClick={() => props.onReset()}
             title="Start Over"
           >
-            <IconRefresh size={25} />
-          </Button>
+            Refresh(Restart bot)
+          </button>
         </div>
-      </Center>
-    </Container>
+      </div>
+    </div>
   );
 }
