@@ -1,7 +1,7 @@
 import { convertToCoreMessages, streamText } from 'ai';
 import { z } from 'zod';
 import { createAnthropic } from '@ai-sdk/anthropic';
-import { env } from '@/utils/constants';
+import { env } from '@/utils/env';
 import { createLogger } from '@/utils/logger';
 
 const logger = createLogger("POST /api/chat");
@@ -109,15 +109,15 @@ const toolBuilder = new ToolBuilder();
 //     return weatherOptions[Math.floor(Math.random() * weatherOptions.length)];
 //   });
 
-toolBuilder.addUserInteractionTool("askForChapterDecision", "Ask the user how the story should continue. The response is a string with the users choice and correctness of their answer.")
-  .addParameter("question", "string", "Ask with an open ended question how the story should continue")
-  .addParameter("possibility1", "string", "The first possibility how the story could continue")
-  .addParameter("possibility2", "string", "The second possibility how the story could continue")
-  .addParameter("possibility3", "string", "The third possibility how the story could continue")
-  .build();
+// toolBuilder.addUserInteractionTool("askForChapterDecision", "Ask the user how the story should continue. The response is a string with the users choice and correctness of their answer.")
+//   .addParameter("question", "string", "Ask with an open ended question how the story should continue")
+//   .addParameter("possibility1", "string", "The first possibility how the story could continue")
+//   .addParameter("possibility2", "string", "The second possibility how the story could continue")
+//   .addParameter("possibility3", "string", "The third possibility how the story could continue")
+//   .build();
 
-toolBuilder.addClientTool("storyEnded", "End the story. The user has reached the end of the story.")
-  .build();
+// toolBuilder.addClientTool("storyEnded", "End the story. The user has reached the end of the story.")
+//   .build();
 
 toolBuilder.getTools();
 

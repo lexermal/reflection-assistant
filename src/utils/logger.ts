@@ -1,5 +1,5 @@
 import pino from 'pino';
-import { env } from './constants';
+import { env } from './env';
 
 export const createLogger = (fileId: string) => {
     const logger = pino(pino.transport({
