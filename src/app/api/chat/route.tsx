@@ -1,13 +1,15 @@
 import { convertToCoreMessages, streamText } from 'ai';
-import { z } from 'zod';
 import { createAnthropic } from '@ai-sdk/anthropic';
 import { env } from '@/utils/env';
 import { createLogger } from '@/utils/logger';
+import ToolBuilder from '@/backend/ToolBuilder';
+import { Entry } from '@/app/reflection/components/analyseDate';
 
 const logger = createLogger("POST /api/chat");
 
 export async function POST(req: Request) {
-  const { messages } = await req.json();
+  let { messages, entries } = await req.json();
+  messages = [getInstructionMessage(entries), ...messages];
 
   const anthropic = createAnthropic({ apiKey: env.ANTHROPIC_API_KEY });
 
@@ -15,6 +17,7 @@ export async function POST(req: Request) {
     model: anthropic("claude-3-5-sonnet-20240620"),
     messages: convertToCoreMessages(messages),
     tools: toolBuilder.getTools(),
+
   }).catch((error) => {
     logger.error("Error generating story response:", { error });
     throw new Error("Failed to generate story response");
@@ -23,73 +26,24 @@ export async function POST(req: Request) {
   return result.toDataStreamResponse();
 }
 
-type BasicType = string | number | boolean;
+function getInstructionMessage(entries: Entry[]) {
+  const instructions = `
+Act like a reflection assistant.
+Here is a list of the user's reflections for the last week:
+'''
+${entries.map((entry) => {
+    return entry.reflection.map((reflection) => `Date: ${entry.date}, Mood: ${entry.mood}, Reflection: ${reflection}`);
+  }).flat().join("\n")}
+  '''
 
-class ToolBuilder {
+First group the topic that are closely related and then let the user reflect on the majour topics. Go through each.
+`;
 
-  tools = {} as any;
+  console.log(instructions);
 
-  public addClientTool(name: string, description = "") {
-    let parameters = z.object({});
-
-    const builder = {
-      addParameter: (name: string, type: BasicType, description: string) => {
-        parameters = parameters.extend({
-          [name]: this.buildParameter(type, description)
-        });
-        return builder;
-      },
-      build: () => {
-        this.tools[name] = {
-          description,
-          parameters
-        }
-      }
-    }
-    return builder;
-  }
-
-  public addUserInteractionTool(name: string, description = "") {
-    return this.addClientTool(name, description);
-  }
-
-  public addServerTool(name: string, description = "") {
-    let parameters = z.object({});
-
-    const builder = {
-      addParameter: (name: string, type: BasicType, description: string) => {
-        parameters = parameters.extend({
-          [name]: this.buildParameter(type, description)
-        });
-        return builder;
-      },
-      build: <T, W>(fn: (params: T) => Promise<W>) => {
-        this.tools[name] = {
-          description,
-          parameters,
-          execute: fn,
-        }
-      }
-    }
-    return builder;
-  }
-
-  private buildParameter(type: BasicType, description: string) {
-    if (typeof type === 'string') {
-      return z.string().describe(description);
-    } else if (typeof type === 'number') {
-      return z.number().describe(description);
-    } else if (typeof type === 'boolean') {
-      return z.boolean().describe(description);
-    }
-    return z.object({}).describe(description);
-  }
-
-  getTools() {
-    return this.tools;
-  }
-
+  return { role: "system", content: instructions };
 }
+
 
 const toolBuilder = new ToolBuilder();
 

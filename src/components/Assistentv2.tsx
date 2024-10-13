@@ -8,38 +8,50 @@ import { useEnv } from '@/providers/EnvProvider';
 import EmitterSingleton from '@/utils/Emitter';
 
 const emitter = EmitterSingleton;
+const kickedOffConversation = false;
+
+interface FirstMessages {
+    instructions?: string;
+    userMessage: string;
+    assistantMessage?: string;
+}
 
 interface Props {
-    instructions: string;
-    firstMessage: string;
     voiceId: VoiceId;
+    endpoint: string;
+    body?: any;
     avatarImageUrl: string;
     onComplete: (result: any) => void;
+    autoStartConversation?: FirstMessages;
 }
 
 const sender = new MessageSender();
 
-function Assistentv2({ avatarImageUrl: personImageUrl, instructions, firstMessage, voiceId, onComplete }: Props) {
+function Assistentv2({ avatarImageUrl, voiceId, onComplete, body, endpoint, autoStartConversation }: Props) {
     sender.setVoiceId(voiceId);
     sender.setElevenLabsApiKey(useEnv().ELEVENLABS_API_KEY);
     const [oralCommunication, setOralCommunication] = React.useState(true);
 
     const { messages, append, isLoading, setMessages } = useChat({
         maxToolRoundtrips: 5,
-        api: "/api/chat",
+        api: endpoint,
+        body
     });
 
     const lastAssistantMessage = [...messages].filter((m) => m.role === 'assistant').pop()?.content;
     console.log("messages", messages);
 
     useEffect(() => {
-        setMessages([
-            { id: '1', role: 'system', content: instructions },
-            { id: '2', role: 'user', content: "Hi" },
-            { id: '3', role: 'assistant', content: firstMessage }
-        ]);
+        if (!autoStartConversation) {
+            return;
+        }
 
-        sender.steamFullMessage(firstMessage);
+        setMessages(getFirstMessages(autoStartConversation));
+        append({ role: 'user', content: autoStartConversation.userMessage });
+
+        if (autoStartConversation.assistantMessage && !kickedOffConversation) {
+            sender.steamFullMessage(autoStartConversation.assistantMessage);
+        }
     }, []);
 
     useEffect(() => {
@@ -59,23 +71,23 @@ function Assistentv2({ avatarImageUrl: personImageUrl, instructions, firstMessag
         }
     }, [lastMessage]);
 
-    if (lastMessage?.toolInvocations) {
-        const args = lastMessage.toolInvocations[0].args;
+    // if (lastMessage?.toolInvocations) {
+    //     const args = lastMessage.toolInvocations[0].args;
 
-        const success = args.explanationUnderstood === "TRUE" || args.studentKnowsTopic === "TRUE";
+    //     const success = args.explanationUnderstood === "TRUE" || args.studentKnowsTopic === "TRUE";
 
-        return <div className="px-5 pt-5 overflow-y-auto text-center" style={{ height: "478px" }}>
-            <h1 className='text-center mt-5 mb-5'>
-                {success ? "Great job!" : "You failed"}
-            </h1>
-            <p>{args.improvementHints}</p>
-        </div>
-    }
+    //     return <div className="px-5 pt-5 overflow-y-auto text-center" style={{ height: "478px" }}>
+    //         <h1 className='text-center mt-5 mb-5'>
+    //             {success ? "Great job!" : "You failed"}
+    //         </h1>
+    //         <p>{args.improvementHints}</p>
+    //     </div>
+    // }
 
     return (
         <div>
             {oralCommunication ?
-                <CircleAudioAvatar imageUrl={personImageUrl} className='mx-auto my-16' /> :
+                <CircleAudioAvatar imageUrl={avatarImageUrl} className='mx-auto my-16' /> :
                 <div className="w-full">
                     {lastAssistantMessage && <div className="text-gray-700 px-5 pt-5 overflow-y-auto " style={{ height: "478px" }}>
                         {lastAssistantMessage}
@@ -83,8 +95,8 @@ function Assistentv2({ avatarImageUrl: personImageUrl, instructions, firstMessag
                 </div>}
             <AudioInputField
                 onSubmit={message => {
-                     append({ role: 'user', content: message });
-                     EmitterSingleton.emit("analytics-event", {
+                    append({ role: 'user', content: message });
+                    EmitterSingleton.emit("analytics-event", {
                         category: "opposition",
                         action: "send-message: " + message,
                     });
@@ -101,5 +113,23 @@ function Assistentv2({ avatarImageUrl: personImageUrl, instructions, firstMessag
         </div>
     );
 };
+
+function getFirstMessages(instructions: FirstMessages): any[] {
+    const messages = [];
+
+    if (instructions.instructions) {
+        messages.push({ id: '1', role: 'system', content: instructions.instructions });
+    }
+    if (instructions.userMessage) {
+        messages.push({ id: '2', role: 'user', content: instructions.userMessage });
+    }
+    if (instructions.assistantMessage) {
+        messages.push({ id: '3', role: 'assistant', content: instructions.assistantMessage });
+    }
+
+    console.log("getFirstMessages", messages);
+
+    return messages;
+}
 
 export default Assistentv2;
