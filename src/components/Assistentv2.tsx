@@ -6,6 +6,7 @@ import MessageSender from './EmbeddedAssistent/Voice/MessageSender';
 import { VoiceId } from './EmbeddedAssistent/Voice/TTS';
 import { useEnv } from '@/providers/EnvProvider';
 import EmitterSingleton from '@/utils/Emitter';
+import Markdown from 'react-markdown';
 
 const emitter = EmitterSingleton;
 const kickedOffConversation = false;
@@ -86,13 +87,12 @@ function Assistentv2({ avatarImageUrl, voiceId, onComplete, body, endpoint, auto
 
     return (
         <div>
-            {oralCommunication ?
-                <CircleAudioAvatar imageUrl={avatarImageUrl} className='mx-auto my-16' /> :
-                <div className="w-full">
-                    {lastAssistantMessage && <div className="text-gray-700 px-5 pt-5 overflow-y-auto " style={{ height: "478px" }}>
-                        {lastAssistantMessage}
-                    </div>}
+            {oralCommunication && <CircleAudioAvatar imageUrl={avatarImageUrl} className='mx-auto my-16' />}
+            <div className="w-full">
+                {lastAssistantMessage && <div className="text-gray-700 px-5 pt-5 overflow-y-auto remirror-theme" style={{ height: "478px" }}>
+                    <Markdown>{lastAssistantMessage}</Markdown>
                 </div>}
+            </div>
             <AudioInputField
                 onSubmit={message => {
                     append({ role: 'user', content: message });

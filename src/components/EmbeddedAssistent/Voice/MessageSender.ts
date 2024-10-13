@@ -78,6 +78,12 @@ class MessageSender {
             this.tts?.sendMessage(newSubstring);
             return;
         }
+
+        // check if newSubstring contains no visible characters
+        if (!newSubstring.trim()) {
+            return;
+        }
+
         const parts = newSubstring.split(' ');
         if (parts.length > 1 && !(parts.length === 2 && parts[0] === '')) {
             const subString = parts.splice(0, parts.length - 1).join(' ');

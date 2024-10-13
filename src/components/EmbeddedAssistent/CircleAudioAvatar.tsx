@@ -69,7 +69,7 @@ const CircleAudioAvatar: React.FC<CircleAudioAvatarProps> = ({ imageUrl, classNa
         }
     };
 
-    return <canvas ref={canvasRef} className={className} width={500} height={500} style={{ width: '350px', height: '350px' }} />;
+    return <canvas ref={canvasRef} className={className} width={500} height={500} style={{ width: '150px', height: '150px' }} />;
 };
 
 export default CircleAudioAvatar;

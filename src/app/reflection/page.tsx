@@ -14,7 +14,7 @@ const ReflectionPage: React.FC = () => {
     return (
         <div>
             <h1 className='text-3xl text-center mt-5'>Reflection Assistent</h1>
-            <FileUpload setFileContent={setFileContent} />
+            {fileContent.length === 0 && <FileUpload setFileContent={setFileContent} />}
             {fileContent.length > 0 && <Chat entries={fileContent} />}
         </div>
     );
@@ -22,11 +22,10 @@ const ReflectionPage: React.FC = () => {
 
 export function Chat({ entries }: { entries: Entry[] }) {
     return (
-        <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch">
+        <div className="flex flex-col w-3/4 mb-5 mx-auto stretch">
             <Assistentv2
                 autoStartConversation={{
-                    userMessage:"Hi",
-                    assistantMessage: 'Act like a reflection assistant and here to help.'
+                    userMessage: "Hi"
                 }}
                 onComplete={(args) => console.log(args)}
                 avatarImageUrl='https://www.gravatar.com/avatar/'
