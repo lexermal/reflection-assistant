@@ -13,18 +13,9 @@ const ReflectionPage: React.FC = () => {
 
     return (
         <div>
-            <h1 className='text-3xl'>Reflection Assistent</h1>
+            <h1 className='text-3xl text-center mt-5'>Reflection Assistent</h1>
             <FileUpload setFileContent={setFileContent} />
-            <div>
-                <ul>
-                    {fileContent.map((line, index) => (
-                        <li key={index}>{
-                            `Date: ${line.date}, Mood: ${line.mood}, Reflection: ${line.reflection}`
-                        }</li>
-                    ))}
-                </ul>
-            </div>
-            <Chat entries={fileContent} />
+            {fileContent.length > 0 && <Chat entries={fileContent} />}
         </div>
     );
 };
@@ -33,11 +24,15 @@ export function Chat({ entries }: { entries: Entry[] }) {
     return (
         <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch">
             <Assistentv2
-                firstMessage='My first message'
-                instructions='Be funny'
+                autoStartConversation={{
+                    userMessage:"Hi",
+                    assistantMessage: 'Act like a reflection assistant and here to help.'
+                }}
                 onComplete={(args) => console.log(args)}
                 avatarImageUrl='https://www.gravatar.com/avatar/'
                 voiceId={VoiceId.VISIONARY}
+                endpoint='/api/chat'
+                body={{ entries }}
             />
         </div>
     );
