@@ -13,7 +13,7 @@ const ReflectionPage: React.FC = () => {
 
     return (
         <div>
-            <h1 className='text-3xl text-center mt-5'>Reflection Assistent</h1>
+            <h1 className='text-3xl text-center mt-5'>Reflection Assistant</h1>
             {fileContent.length === 0 && <FileUpload setFileContent={setFileContent} />}
             {fileContent.length > 0 && <Chat entries={fileContent} />}
         </div>

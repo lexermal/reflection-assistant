@@ -28,13 +28,13 @@ export function FileUpload({ setFileContent }: FileUploadProps) {
     }
   };
 
-  return <div className='bg-blue-300 w-2/5 mt-7 mx-auto p-6 rounded-xl mb-10 cursor-pointer border-dashed border-4 border-spacing-8 border-purple-900 '>
+  return <div>
     <input id="fileUPLOAD" type="file" accept=".csv" onChange={handleFileUpload} className="hidden" />
-    <label htmlFor="fileUPLOAD">
+    <label htmlFor="fileUPLOAD" className='block bg-blue-300 w-2/5 mt-7 mx-auto p-6 rounded-xl mb-10 cursor-pointer border-dashed border-4 border-spacing-8 border-purple-900'>
       <div className='small'>
         <div className='text-center flex flex-row'>
           <FaUpload className='w-14 h-6' />
-          <span>Upload your Dailio backup.</span>
+          <span>Upload your Daylio backup.</span>
         </div>
       </div>
     </label>
